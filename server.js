@@ -7,7 +7,18 @@ const path = require('path');
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
-app.use(cors());
+const allowedOrigins = ['https://marvelous-twilight-fefb07.netlify.app'];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
+
 app.use('/gpx', express.static('uploads'));
 
 app.get('/', (req, res) => {
